@@ -1,3 +1,4 @@
+// Example taken from https://www.highcharts.com/demo/heatmap
 const options = {
     chart: {
         type: 'heatmap',

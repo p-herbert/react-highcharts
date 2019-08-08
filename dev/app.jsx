@@ -11,7 +11,6 @@ const highcharts = require('highcharts/highstock');
 // Extend with modules
 _.each([require('highcharts/modules/heatmap')], module => module(highcharts));
 
-// Example taken from https://www.highcharts.com/demo/heatmap
 ReactDOM.render(
     <HighchartsWrapper
         chartId={'sample-chart'}
