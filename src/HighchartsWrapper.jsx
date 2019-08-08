@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Highcharts from 'highcharts';
 import _ from 'underscore';
 
 function HighchartsWrapper(props) {
-    const [chart, setChart] = useState(null);
+    const chart = useRef(null);
 
     useEffect(() => {
         // Set default chart theme
@@ -13,7 +13,7 @@ function HighchartsWrapper(props) {
         }
 
         // Create the chart
-        const newChart = props.highcharts[props.constructorType](
+        chart.current = props.highcharts[props.constructorType](
             props.chartId,
             props.options,
             _.isFunction(props.chartLoadedCallback)
@@ -23,24 +23,27 @@ function HighchartsWrapper(props) {
 
         // Add loading screen
         if (_.isEmpty(props.options.series)) {
-            newChart.showLoading('Fetching data...');
+            chart.current.showLoading('Fetching data...');
         }
-
-        setChart(newChart);
 
         return function cleanup() {
             // Destroy the chart
-            if (chart) {
-                chart.destroy();
+            if (chart.current) {
+                chart.current.destroy();
             }
         };
     }, []);
 
     useEffect(() => {
-        if (chart && props.allowToUpdate) {
+        if (props.allowToUpdate) {
             // https://api.highcharts.com/class-reference/Highcharts.Chart.html#update
-            chart.update(props.options, true, true, true);
-            chart.hideLoading();
+            chart.current.update(props.options, true, true, true);
+
+            if (_.isEmpty(props.options.series)) {
+                chart.current.showLoading('Fetching data...');
+            } else {
+                chart.current.hideLoading();
+            }
         }
     }, [props.options]);
 
