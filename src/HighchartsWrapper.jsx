@@ -1,75 +1,64 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Highcharts from 'highcharts';
 import _ from 'underscore';
 
-class HighchartsWrapper extends Component {
-    constructor(props) {
-        super(props);
+function HighchartsWrapper(props) {
+    const [chart, setChart] = useState(null);
 
-        this.state = {};
-        this.chart = null;
-    }
-
-    componentDidMount() {
-        const {
-            chartId,
-            constructorType,
-            options,
-            chartLoadedCallback,
-            theme,
-            highcharts,
-        } = this.props;
-
+    useEffect(() => {
         // Set default chart theme
-        if (!_.isEmpty(theme)) {
-            highcharts.setOptions(theme);
+        if (!_.isEmpty(props.theme)) {
+            props.highcharts.setOptions(props.theme);
         }
 
         // Create the chart
-        this.chart = highcharts[constructorType](
-            chartId,
-            options,
-            _.isFunction(chartLoadedCallback) ? chartLoadedCallback : undefined
+        const newChart = props.highcharts[props.constructorType](
+            props.chartId,
+            props.options,
+            _.isFunction(props.chartLoadedCallback)
+                ? props.chartLoadedCallback
+                : undefined
         );
-    }
 
-    componentWillUnmount() {
-        // Destroy the chart
-        if (this.chart) {
-            this.chart.destroy();
-            this.chart = null;
+        // Add loading screen
+        if (_.isEmpty(props.options.series)) {
+            newChart.showLoading('Fetching data...');
         }
-    }
 
-    componentDidUpdate(prevProps) {
-        if (
-            this.chart &&
-            this.props.allowToUpdate &&
-            !_.isEqual(this.props, prevProps)
-        ) {
+        setChart(newChart);
+
+        return function cleanup() {
+            // Destroy the chart
+            if (chart) {
+                chart.destroy();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (chart && props.allowToUpdate) {
             // https://api.highcharts.com/class-reference/Highcharts.Chart.html#update
-            this.chart.update(this.props.options, true, true, true);
+            chart.update(props.options, true, true, true);
+            chart.hideLoading();
         }
-    }
+    }, [props.options]);
 
-    render() {
-        const { chartId, height } = this.props;
+    // Create a div for the chart
+    const { height, chartId } = props;
 
-        // Create a div for the chart
-        return (
-            <div style={{ position: 'relative', height }}>
-                <div
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                    }}
-                    id={chartId}
-                />
-            </div>
-        );
-    }
+    return (
+        <div style={{ position: 'relative', height }}>
+            <div
+                style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                }}
+                id={chartId}
+            />
+        </div>
+    );
 }
 
 HighchartsWrapper.propTypes = {
