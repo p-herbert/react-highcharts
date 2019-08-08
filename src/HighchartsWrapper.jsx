@@ -21,11 +21,6 @@ class HighchartsWrapper extends Component {
             highcharts,
         } = this.props;
 
-        // Disable license
-        options['credits'] = {
-            enabled: false,
-        };
-
         // Set default chart theme
         if (!_.isEmpty(theme)) {
             highcharts.setOptions(theme);
