@@ -18,6 +18,14 @@ const theme = {
     rangeSelector: {
         enabled: false,
     },
+    loading: {
+        style: {
+            fontFamily: 'Quicksand',
+            fontSize: '18px',
+            color: '#002060',
+            fontWeight: 'bold',
+        },
+    },
     title: {
         style: {
             fontFamily: 'Quicksand',
