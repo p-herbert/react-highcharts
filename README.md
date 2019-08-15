@@ -16,7 +16,7 @@
 | `chartId` | String | yes | - | Unique identifier for the chart |
 | `constructorType` | String | no | `'chart'` | String for [constructor method]. Official constructors: <br>- `'chart'` for Highcharts charts <br>- `'stockChart'` for Highstock charts <br>- `'mapChart'` for Highmaps charts <br>- `'ganttChart'` for Gantt charts|
 | `options` | Object | no | `{}` | Highcharts chart configuration object. Please refer to the Highcharts [API documentation]. |
-| `allowToUpdate` | Boolean | no | `true` | This option allow to turn off the updating. |
+| `allowToUpdate` | Boolean | no | `true` | Allow the chart to update. |
 | `chartLoadedCallback` | Function | no | `undefined` | Callback function that is called once the chart is created. |
 | `theme` | Object | no | `undefined` | Pre-defined defaults to apply to each chart. |
 | `height` | String | no | `600px` | Height of the chart's container. |
